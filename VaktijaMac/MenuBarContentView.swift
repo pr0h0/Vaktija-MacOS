@@ -11,7 +11,7 @@ struct MenuBarContentView: View {
                     Text("Next")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text(appState.nextTarget?.event.displayName ?? "Unavailable")
+                    Text(appState.nextTarget.map { appState.displayName(for: $0.event, on: $0.date) } ?? "Unavailable")
                         .font(.title2.weight(.semibold))
                 }
                 Spacer()
@@ -23,7 +23,7 @@ struct MenuBarContentView: View {
 
             VStack(spacing: 8) {
                 ForEach(PrayerEvent.countdownEvents, id: \.self) { event in
-                    PrayerRow(name: event.displayName, time: appState.displayTime(appState.today?.time(for: event)))
+                    PrayerRow(name: appState.displayName(for: event), time: appState.displayTime(appState.today?.time(for: event)))
                 }
             }
 

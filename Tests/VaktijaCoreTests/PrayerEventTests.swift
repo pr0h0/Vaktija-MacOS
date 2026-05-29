@@ -21,4 +21,20 @@ final class PrayerEventTests: XCTestCase {
         XCTAssertEqual(PrayerEvent.midnight.displayName, "Pola noći")
         XCTAssertEqual(PrayerEvent.lastThird.displayName, "Zadnja trećina")
     }
+
+    func testDisplayNameUsesDzumaForDhuhrOnFriday() throws {
+        let calendar = Self.sarajevoCalendar
+        let friday = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 5, day: 29)))
+        let thursday = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 5, day: 28)))
+
+        XCTAssertEqual(PrayerEvent.dhuhr.displayName(on: friday, calendar: calendar), "Džuma")
+        XCTAssertEqual(PrayerEvent.dhuhr.displayName(on: thursday, calendar: calendar), "Podne")
+        XCTAssertEqual(PrayerEvent.asr.displayName(on: friday, calendar: calendar), "Ikindija")
+    }
+
+    private static var sarajevoCalendar: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Europe/Sarajevo")!
+        return calendar
+    }
 }

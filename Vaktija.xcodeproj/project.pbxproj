@@ -27,6 +27,7 @@
 		90F8291D2EA1A6F52A687E5D /* PrayerScheduleMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC8345BFA7F96A497D7F9F7 /* PrayerScheduleMapperTests.swift */; };
 		98D611709DF5492C9899129B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FB8EF054289D86807CA639 /* AppState.swift */; };
 		9E00FECC90CFE368C1B3BE52 /* CacheWarmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F5A5D958A7082DEDED886 /* CacheWarmer.swift */; };
+		9FFA1E98F2A44F2F24C29D30 /* CacheHealthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2ED3BEA2AADE758A71904F /* CacheHealthTests.swift */; };
 		B4604FB72BC5F36143E42E51 /* AlAdhanClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D1533F886AB241F71F0144 /* AlAdhanClient.swift */; };
 		B6C626BF2D6A267525893A95 /* PrayerCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AA01DB4CBE6016EF9160FA /* PrayerCacheTests.swift */; };
 		BEFD922B9202BF81A890E049 /* NotificationScheduleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2828FEB4C5CD0FBFA2E75CF5 /* NotificationScheduleBuilder.swift */; };
@@ -39,6 +40,7 @@
 		EBECBE5BF7B748C3EED463AC /* MenuBarContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4665CE474186D762F13D20C2 /* MenuBarContentView.swift */; };
 		EC0797C881B1B96A6B8FB233 /* AlAdhanModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1575F7E460885D6FF76846A9 /* AlAdhanModels.swift */; };
 		F1EC5BF36FC48DEB728A3F8A /* PrayerEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA9E6A9644D09E3E98A2314 /* PrayerEventTests.swift */; };
+		F8D81FE73E41D74E55D943C2 /* CacheHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABAB93CF6D65FA922FD85D0 /* CacheHealth.swift */; };
 		FF6C0BBE3C7FD0B286C8A9B3 /* VaktijaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 944DBD84B7F3C780ED441256 /* VaktijaCore.framework */; };
 /* End PBXBuildFile section */
 
@@ -136,12 +138,14 @@
 		8EC8345BFA7F96A497D7F9F7 /* PrayerScheduleMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerScheduleMapperTests.swift; sourceTree = "<group>"; };
 		91D80A514977FE0368A7A9CA /* VaktijaMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaktijaMacApp.swift; sourceTree = "<group>"; };
 		944DBD84B7F3C780ED441256 /* VaktijaCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VaktijaCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A2ED3BEA2AADE758A71904F /* CacheHealthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheHealthTests.swift; sourceTree = "<group>"; };
 		ABA9E6A9644D09E3E98A2314 /* PrayerEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEventTests.swift; sourceTree = "<group>"; };
 		B1D1533F886AB241F71F0144 /* AlAdhanClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlAdhanClient.swift; sourceTree = "<group>"; };
 		B7970412E67E4E31A943B264 /* PrayerCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerCache.swift; sourceTree = "<group>"; };
 		BA4579D3FD31503D971E7FB9 /* CountdownFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownFormatterTests.swift; sourceTree = "<group>"; };
 		CC8D2490ECED254D3F679F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD8265516271E22A19E4F1B9 /* PrayerScheduleMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerScheduleMapper.swift; sourceTree = "<group>"; };
+		DABAB93CF6D65FA922FD85D0 /* CacheHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheHealth.swift; sourceTree = "<group>"; };
 		E062A17D9820A0374EA26115 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F58346FD769E0292EB5D8EE6 /* PrayerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEvent.swift; sourceTree = "<group>"; };
 		F7D0432357131C72B4C86689 /* NotificationScheduleBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduleBuilderTests.swift; sourceTree = "<group>"; };
@@ -181,6 +185,7 @@
 			children = (
 				B1D1533F886AB241F71F0144 /* AlAdhanClient.swift */,
 				1575F7E460885D6FF76846A9 /* AlAdhanModels.swift */,
+				DABAB93CF6D65FA922FD85D0 /* CacheHealth.swift */,
 				4B9F5A5D958A7082DEDED886 /* CacheWarmer.swift */,
 				254323DD7E82E39CB35B8E55 /* CountdownEngine.swift */,
 				892D976E46051EC7D395F017 /* CountdownFormatter.swift */,
@@ -222,6 +227,7 @@
 		896D0124E9CD58CF9C52CB89 /* VaktijaCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				9A2ED3BEA2AADE758A71904F /* CacheHealthTests.swift */,
 				6CA06654B713C94206168A9F /* CacheWarmerTests.swift */,
 				62C53F0D4F2C9B79704DA8B1 /* CountdownEngineTests.swift */,
 				BA4579D3FD31503D971E7FB9 /* CountdownFormatterTests.swift */,
@@ -419,6 +425,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FFA1E98F2A44F2F24C29D30 /* CacheHealthTests.swift in Sources */,
 				DCF1DA9AC9E90D42F24A60B6 /* CacheWarmerTests.swift in Sources */,
 				E53E8A7A26AF862AF56F6339 /* CountdownEngineTests.swift in Sources */,
 				734EE82EBBD13B2A38B4FE6B /* CountdownFormatterTests.swift in Sources */,
@@ -435,6 +442,7 @@
 			files = (
 				B4604FB72BC5F36143E42E51 /* AlAdhanClient.swift in Sources */,
 				EC0797C881B1B96A6B8FB233 /* AlAdhanModels.swift in Sources */,
+				F8D81FE73E41D74E55D943C2 /* CacheHealth.swift in Sources */,
 				9E00FECC90CFE368C1B3BE52 /* CacheWarmer.swift in Sources */,
 				0DC4F40A8FCE2B10E28703A0 /* CountdownEngine.swift in Sources */,
 				5E304D7A44380B8052CFB0E0 /* CountdownFormatter.swift in Sources */,
@@ -488,6 +496,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -518,6 +527,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

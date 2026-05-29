@@ -10,14 +10,18 @@ public enum CountdownFormatter {
     }
 
     public static func compact(event: PrayerEvent, duration: TimeInterval) -> String {
+        compact(name: event.displayName, duration: duration)
+    }
+
+    public static func compact(name: String, duration: TimeInterval) -> String {
         let totalMinutes = max(0, Int(duration.rounded(.down)) / 60)
         let hours = totalMinutes / 60
         let minutes = totalMinutes % 60
 
         if hours > 0 {
-            return String(format: "%@ %dh %02dm", event.displayName, hours, minutes)
+            return String(format: "%@ %dh %02dm", name, hours, minutes)
         }
 
-        return "\(event.displayName) \(minutes)m"
+        return "\(name) \(minutes)m"
     }
 }

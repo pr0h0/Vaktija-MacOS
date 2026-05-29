@@ -19,5 +19,6 @@ struct VaktijaMacApp: App {
             }
         }
         .menuBarExtraStyle(.window)
+        .keyboardShortcut("p", modifiers: [.command, .option])
     }
 }

@@ -31,6 +31,8 @@ targets:
       - Tests/VaktijaCoreTests
     dependencies:
       - target: VaktijaCore
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
   VaktijaMac:
     type: application
     platform: macOS

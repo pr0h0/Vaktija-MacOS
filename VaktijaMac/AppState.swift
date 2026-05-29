@@ -1,4 +1,5 @@
 import Foundation
+import ServiceManagement
 import VaktijaCore
 
 enum MenuBarDisplayMode: String, CaseIterable, Identifiable {
@@ -34,20 +35,27 @@ final class AppState: ObservableObject {
     @Published private(set) var tomorrow: PrayerDay?
     @Published private(set) var nextTarget: CountdownTarget?
     @Published private(set) var cacheStatus = "Loading"
+    @Published private(set) var cacheHealth = "Checking"
+    @Published private(set) var launchAtLoginEnabled = false
+    @Published private(set) var launchAtLoginStatus = "Off"
     @Published private(set) var now = Date()
 
     var fullMenuBarTitle: String {
         guard let nextTarget else {
             return "Vaktija"
         }
-        return "\(nextTarget.event.displayName): \(CountdownFormatter.full(duration: nextTarget.duration))"
+        let name = displayName(for: nextTarget.event, on: nextTarget.date)
+        return "\(name): \(CountdownFormatter.full(duration: nextTarget.duration))"
     }
 
     var compactMenuBarTitle: String {
         guard let nextTarget else {
             return "Vaktija"
         }
-        return CountdownFormatter.compact(event: nextTarget.event, duration: nextTarget.duration)
+        return CountdownFormatter.compact(
+            name: displayName(for: nextTarget.event, on: nextTarget.date),
+            duration: nextTarget.duration
+        )
     }
 
     let location = PrayerLocation.sarajevo
@@ -82,6 +90,7 @@ final class AppState: ObservableObject {
         let rawMode = defaults.string(forKey: Keys.menuBarDisplayMode)
         self.menuBarDisplayMode = rawMode.flatMap(MenuBarDisplayMode.init(rawValue:)) ?? .fullCountdown
         self.notificationPreferences = Self.loadNotificationPreferences(from: defaults)
+        refreshLaunchAtLoginStatus()
 
         startTimer()
         Task {
@@ -94,6 +103,7 @@ final class AppState: ObservableObject {
         do {
             try loadVisibleDaysFromCache()
             cacheStatus = "Cached"
+            updateCacheHealth()
             await rescheduleNotificationsIfNeeded()
         } catch {
             cacheStatus = "Fetching"
@@ -104,6 +114,7 @@ final class AppState: ObservableObject {
 
             try loadVisibleDaysFromCache()
             cacheStatus = "Updated"
+            updateCacheHealth()
             await rescheduleNotificationsIfNeeded()
 
             Task.detached { [cache, client, location] in
@@ -114,6 +125,7 @@ final class AppState: ObservableObject {
             }
         } catch {
             cacheStatus = today == nil ? "Unavailable" : "Offline Cache"
+            updateCacheHealth()
             await rescheduleNotificationsIfNeeded()
         }
     }
@@ -123,6 +135,29 @@ final class AppState: ObservableObject {
             return "--:--"
         }
         return String(format: "%02d:%02d", hour, minute)
+    }
+
+    func displayName(for event: PrayerEvent, on date: Date? = nil) -> String {
+        let effectiveDate = date ?? today?.date ?? now
+        return event.displayName(on: effectiveDate, calendar: calendar)
+    }
+
+    func setLaunchAtLoginEnabled(_ isEnabled: Bool) {
+        do {
+            if isEnabled {
+                try SMAppService.mainApp.register()
+            } else {
+                try SMAppService.mainApp.unregister()
+            }
+        } catch {
+            launchAtLoginStatus = "Unavailable"
+        }
+
+        refreshLaunchAtLoginStatus()
+    }
+
+    func openLoginItemsSettings() {
+        SMAppService.openSystemSettingsLoginItems()
     }
 
     func openNotificationSettings() {
@@ -179,6 +214,35 @@ final class AppState: ObservableObject {
         today = day(in: todayMonth, matching: todayDate)
         tomorrow = day(in: tomorrowMonth, matching: tomorrowDate)
         updateNextTarget()
+    }
+
+    private func updateCacheHealth() {
+        cacheHealth = CacheHealth.summary(
+            cache: cache,
+            locationSlug: location.slug,
+            now: now,
+            calendar: calendar
+        )
+    }
+
+    private func refreshLaunchAtLoginStatus() {
+        switch SMAppService.mainApp.status {
+        case .enabled:
+            launchAtLoginEnabled = true
+            launchAtLoginStatus = "On"
+        case .requiresApproval:
+            launchAtLoginEnabled = false
+            launchAtLoginStatus = "Needs approval"
+        case .notRegistered:
+            launchAtLoginEnabled = false
+            launchAtLoginStatus = "Off"
+        case .notFound:
+            launchAtLoginEnabled = false
+            launchAtLoginStatus = "Unavailable"
+        @unknown default:
+            launchAtLoginEnabled = false
+            launchAtLoginStatus = "Unknown"
+        }
     }
 
     private func loadMonth(containing date: Date) throws -> [PrayerDay] {

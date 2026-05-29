@@ -26,4 +26,12 @@ public enum PrayerEvent: String, Codable, CaseIterable, Sendable {
         case .lastThird: "Zadnja trećina"
         }
     }
+
+    public func displayName(on date: Date, calendar: Calendar) -> String {
+        guard self == .dhuhr else {
+            return displayName
+        }
+
+        return calendar.component(.weekday, from: date) == 6 ? "Džuma" : displayName
+    }
 }

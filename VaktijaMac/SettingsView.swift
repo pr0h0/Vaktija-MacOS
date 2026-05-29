@@ -12,6 +12,8 @@ struct SettingsView: View {
                 }
             }
 
+            labeledValue("Shortcut", "⌘⌥P")
+
             Divider()
 
             labeledValue("Location", appState.location.name)
@@ -42,6 +44,13 @@ struct SettingsView: View {
             } label: {
                 Label("Open Notification Settings", systemImage: "gear")
             }
+
+            Divider()
+
+            Text("System")
+                .font(.headline)
+
+            launchAtLoginRow
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -51,8 +60,13 @@ struct SettingsView: View {
             Text("Cache")
                 .foregroundStyle(.secondary)
             Spacer(minLength: 12)
-            Text(appState.cacheStatus)
-                .multilineTextAlignment(.trailing)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(appState.cacheStatus)
+                    .multilineTextAlignment(.trailing)
+                Text(appState.cacheHealth)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.trailing)
+            }
             Button {
                 Task { await appState.refreshFromCacheAndNetwork() }
             } label: {
@@ -66,10 +80,38 @@ struct SettingsView: View {
         .font(.caption)
     }
 
+    private var launchAtLoginRow: some View {
+        HStack {
+            Toggle("Launch at Login", isOn: Binding(
+                get: { appState.launchAtLoginEnabled },
+                set: { appState.setLaunchAtLoginEnabled($0) }
+            ))
+            .toggleStyle(.checkbox)
+
+            Spacer(minLength: 12)
+
+            Text(appState.launchAtLoginStatus)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            if appState.launchAtLoginStatus == "Needs approval" {
+                Button {
+                    appState.openLoginItemsSettings()
+                } label: {
+                    Image(systemName: "gear")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .help("Open Login Items Settings")
+                .accessibilityLabel("Open Login Items Settings")
+            }
+        }
+    }
+
     private func notificationRow(for event: PrayerEvent) -> some View {
         let preference = appState.notificationPreference(for: event)
         return HStack(spacing: 8) {
-            Toggle(event.displayName, isOn: Binding(
+            Toggle(appState.displayName(for: event), isOn: Binding(
                 get: { appState.notificationPreference(for: event).isEnabled },
                 set: { appState.setNotificationEnabled($0, for: event) }
             ))

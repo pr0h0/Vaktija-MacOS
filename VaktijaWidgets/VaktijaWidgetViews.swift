@@ -44,7 +44,7 @@ struct VaktijaWidgetView: View {
 
     private var smallView: some View {
         VStack(alignment: .leading, spacing: 9) {
-            Text(entry.nextTarget?.event.displayName ?? "Vaktija")
+            Text(entry.nextTarget.map { displayName(for: $0.event, on: $0.date) } ?? "Vaktija")
                 .font(.title2.weight(.semibold))
                 .lineLimit(1)
 
@@ -100,7 +100,7 @@ struct VaktijaWidgetView: View {
 
     private func nextPrayerRow(countdownLeadingPadding: CGFloat, exactTimeFont: Font) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(entry.nextTarget?.event.displayName ?? "Vaktija")
+            Text(entry.nextTarget.map { displayName(for: $0.event, on: $0.date) } ?? "Vaktija")
                 .font(.title3.weight(.semibold))
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -137,7 +137,7 @@ struct VaktijaWidgetView: View {
             ForEach(events, id: \.self) { event in
                 if let time = entry.today?.time(for: event) {
                     HStack(spacing: 6) {
-                        Text(event.displayName)
+                        Text(displayName(for: event, on: entry.today?.date))
                             .lineLimit(1)
                         Spacer(minLength: 4)
                         Text(timeText(for: time))
@@ -157,7 +157,7 @@ struct VaktijaWidgetView: View {
             ForEach(events, id: \.self) { event in
                 if let time = entry.today?.time(for: event) {
                     HStack(spacing: 6) {
-                        Text(event.displayName)
+                        Text(displayName(for: event, on: entry.today?.date))
                             .lineLimit(1)
                         Spacer(minLength: 8)
                         Text(timeText(for: time))
@@ -194,5 +194,9 @@ struct VaktijaWidgetView: View {
             return "--:--"
         }
         return String(format: "%02d:%02d", hour, minute)
+    }
+
+    private func displayName(for event: PrayerEvent, on date: Date?) -> String {
+        event.displayName(on: date ?? entry.date, calendar: entry.calendar)
     }
 }
