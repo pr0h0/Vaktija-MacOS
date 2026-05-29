@@ -4,6 +4,22 @@ Vaktija is a native macOS menu bar app and WidgetKit extension for Sarajevo pray
 
 The app is built for personal macOS use and currently targets Sarajevo using AlAdhan calendar data with a 14.6 degree calculation method.
 
+## Screenshots
+
+Add screenshots to `docs/screenshots/` using these filenames:
+
+- `menu-popover.png`
+- `small-widget.png`
+- `medium-widget.png`
+- `large-widget.png`
+
+After the images are added, they will render here:
+
+![Menu bar popover](docs/screenshots/menu-popover.png)
+![Small widget](docs/screenshots/small-widget.png)
+![Medium widget](docs/screenshots/medium-widget.png)
+![Large widget](docs/screenshots/large-widget.png)
+
 ## Features
 
 - Menu bar countdown with three display modes:
@@ -113,6 +129,33 @@ hdiutil create -volname "Vaktija" -srcfolder "dist/stage" -ov -format UDZO "dist
 ```
 
 If `APP_PATH` is empty, run the Release build first.
+
+## Change City
+
+The app currently has Sarajevo hardcoded. To use another city, edit `Sources/VaktijaCore/PrayerLocation.swift`:
+
+```swift
+public static let sarajevo = PrayerLocation(
+    slug: "sarajevo",
+    name: "Sarajevo",
+    latitude: 43.84864,
+    longitude: 18.35644,
+    timeZoneIdentifier: "Europe/Sarajevo"
+)
+```
+
+Replace:
+
+- `slug`: lowercase cache key, for example `tuzla`
+- `name`: display name
+- `latitude` and `longitude`: city coordinates
+- `timeZoneIdentifier`: IANA time zone, for example `Europe/Sarajevo`
+
+Then rebuild and run the app. If widgets still show old data, open the app and use the cache refresh button, then restart Notification Center:
+
+```sh
+killall NotificationCenter
+```
 
 ## Project Structure
 
