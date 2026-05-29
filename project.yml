@@ -1,0 +1,93 @@
+name: Vaktija
+options:
+  deploymentTarget:
+    macOS: "15.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "0.1.0"
+    CODE_SIGNING_ALLOWED: "NO"
+    DEVELOPMENT_TEAM: ""
+targets:
+  VaktijaCore:
+    type: framework
+    platform: macOS
+    sources:
+      - Sources/VaktijaCore
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.abdulahproho.vaktija.core
+    info:
+      path: Sources/VaktijaCore/Info.plist
+      properties:
+        CFBundleIdentifier: com.abdulahproho.vaktija.core
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+  VaktijaCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests/VaktijaCoreTests
+    dependencies:
+      - target: VaktijaCore
+  VaktijaMac:
+    type: application
+    platform: macOS
+    sources:
+      - VaktijaMac
+    dependencies:
+      - target: VaktijaCore
+      - target: VaktijaWidgets
+        embed: true
+    info:
+      path: VaktijaMac/Info.plist
+      properties:
+        CFBundleDisplayName: Vaktija
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSMinimumSystemVersion: "15.0"
+        LSUIElement: true
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+    entitlements:
+      path: VaktijaMac/VaktijaMac.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.application-groups:
+          - group.com.abdulahproho.vaktija
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.abdulahproho.vaktija
+  VaktijaWidgets:
+    type: app-extension
+    platform: macOS
+    sources:
+      - VaktijaWidgets
+    dependencies:
+      - target: VaktijaCore
+    info:
+      path: VaktijaWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Vaktija Widgets
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: VaktijaWidgets/VaktijaWidgets.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.application-groups:
+          - group.com.abdulahproho.vaktija
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.abdulahproho.vaktija.widgets
+schemes:
+  VaktijaMac:
+    build:
+      targets:
+        VaktijaMac: all
+        VaktijaWidgets: all
+        VaktijaCore: all
+    test:
+      targets:
+        - VaktijaCoreTests
