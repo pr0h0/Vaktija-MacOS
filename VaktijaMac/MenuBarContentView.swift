@@ -37,14 +37,11 @@ struct MenuBarContentView: View {
             Text("\(appState.location.name) · \(appState.sourceLabel)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Text("Cache: \(appState.cacheStatus)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
 
             SettingsView()
         }
-        .padding(16)
-        .frame(width: 320)
+        .padding(20)
+        .frame(width: 360)
     }
 }
 

@@ -49,7 +49,7 @@ struct SettingsView: View {
                 Label("Send Test Notification", systemImage: "bell.badge")
             }
         }
-        .frame(width: 320, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var cacheStatusRow: some View {
@@ -64,7 +64,8 @@ struct SettingsView: View {
             } label: {
                 Image(systemName: "arrow.clockwise")
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.bordered)
+            .controlSize(.small)
             .help("Refresh Cache")
             .accessibilityLabel("Refresh Cache")
         }
