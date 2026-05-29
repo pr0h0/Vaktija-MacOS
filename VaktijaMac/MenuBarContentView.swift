@@ -1,4 +1,5 @@
 import SwiftUI
+import VaktijaCore
 
 struct MenuBarContentView: View {
     @EnvironmentObject private var appState: AppState
@@ -10,33 +11,33 @@ struct MenuBarContentView: View {
                     Text("Next")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("Asr")
+                    Text(appState.nextTarget?.event.rawValue ?? "Unavailable")
                         .font(.title2.weight(.semibold))
                 }
                 Spacer()
-                Text("00:43:33")
+                Text(appState.nextTarget.map { CountdownFormatter.full(duration: $0.duration) } ?? "--:--:--")
                     .font(.system(.title3, design: .monospaced).weight(.medium))
             }
 
             Divider()
 
             VStack(spacing: 8) {
-                PrayerRow(name: "Fajr", time: "03:27")
-                PrayerRow(name: "Sunrise", time: "05:09")
-                PrayerRow(name: "Dhuhr", time: "12:44")
-                PrayerRow(name: "Asr", time: "16:48")
-                PrayerRow(name: "Maghrib", time: "20:19")
-                PrayerRow(name: "Isha", time: "22:01")
+                ForEach(PrayerEvent.countdownEvents, id: \.self) { event in
+                    PrayerRow(name: event.rawValue, time: appState.displayTime(appState.today?.time(for: event)))
+                }
             }
 
             Divider()
 
-            PrayerRow(name: "Pola noći", time: "00:44")
-            PrayerRow(name: "Zadnja trećina", time: "02:12")
+            PrayerRow(name: "Pola noći", time: appState.displayTime(appState.today?.time(for: .midnight)))
+            PrayerRow(name: "Zadnja trećina", time: appState.displayTime(appState.today?.time(for: .lastThird)))
 
             Divider()
 
             Text("\(appState.location.name) · \(appState.sourceLabel)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text("Cache: \(appState.cacheStatus)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
