@@ -68,11 +68,11 @@ final class NotificationScheduler {
             switch entry.kind {
             case .reminder:
                 let offset = entry.reminderOffsetMinutes ?? 0
-                content.title = "\(entry.event.rawValue) in \(offset)m"
+                content.title = "\(entry.event.displayName) in \(offset)m"
                 content.body = "Starts at \(Self.timeText(for: entry.fireDate.addingTimeInterval(TimeInterval(offset * 60)), calendar: calendar))."
             case .exact:
-                content.title = entry.event.rawValue
-                content.body = "It is time for \(entry.event.rawValue)."
+                content.title = entry.event.displayName
+                content.body = "It is time for \(entry.event.displayName)."
             }
 
             let components = calendar.dateComponents(

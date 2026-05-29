@@ -15,9 +15,9 @@ public enum CountdownFormatter {
         let minutes = totalMinutes % 60
 
         if hours > 0 {
-            return String(format: "%@ %dh %02dm", event.rawValue, hours, minutes)
+            return String(format: "%@ %dh %02dm", event.displayName, hours, minutes)
         }
 
-        return "\(event.rawValue) \(minutes)m"
+        return "\(event.displayName) \(minutes)m"
     }
 }

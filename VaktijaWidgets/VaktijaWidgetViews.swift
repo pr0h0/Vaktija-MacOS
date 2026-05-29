@@ -44,7 +44,7 @@ struct VaktijaWidgetView: View {
 
     private var smallView: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(entry.nextTarget?.event.rawValue ?? "Vaktija")
+            Text(entry.nextTarget?.event.displayName ?? "Vaktija")
                 .font(.title3.weight(.semibold))
                 .lineLimit(1)
 
@@ -95,7 +95,7 @@ struct VaktijaWidgetView: View {
     private func header(titleFont: Font, detailFont: Font) -> some View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry.nextTarget?.event.rawValue ?? "Vaktija")
+                Text(entry.nextTarget?.event.displayName ?? "Vaktija")
                     .font(titleFont)
                     .lineLimit(1)
 
@@ -123,7 +123,7 @@ struct VaktijaWidgetView: View {
             ForEach(events, id: \.self) { event in
                 if let time = entry.today?.time(for: event) {
                     HStack(spacing: 6) {
-                        Text(event.rawValue)
+                        Text(event.displayName)
                             .lineLimit(1)
                         Spacer(minLength: 8)
                         Text(timeText(for: time))

@@ -8,7 +8,7 @@ final class CountdownFormatterTests: XCTestCase {
     }
 
     func testCompactCountdownFormat() {
-        XCTAssertEqual(CountdownFormatter.compact(event: .asr, duration: 43 * 60 + 33), "Asr 43m")
-        XCTAssertEqual(CountdownFormatter.compact(event: .fajr, duration: 65 * 60), "Fajr 1h 05m")
+        XCTAssertEqual(CountdownFormatter.compact(event: .asr, duration: 43 * 60 + 33), "Ikindija 43m")
+        XCTAssertEqual(CountdownFormatter.compact(event: .fajr, duration: 65 * 60), "Sabah 1h 05m")
     }
 }

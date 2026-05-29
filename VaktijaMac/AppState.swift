@@ -40,7 +40,7 @@ final class AppState: ObservableObject {
         guard let nextTarget else {
             return "Vaktija"
         }
-        return "\(nextTarget.event.rawValue): \(CountdownFormatter.full(duration: nextTarget.duration))"
+        return "\(nextTarget.event.displayName): \(CountdownFormatter.full(duration: nextTarget.duration))"
     }
 
     var compactMenuBarTitle: String {

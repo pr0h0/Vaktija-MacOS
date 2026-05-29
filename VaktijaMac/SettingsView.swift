@@ -69,7 +69,7 @@ struct SettingsView: View {
     private func notificationRow(for event: PrayerEvent) -> some View {
         let preference = appState.notificationPreference(for: event)
         return HStack(spacing: 8) {
-            Toggle(event.rawValue, isOn: Binding(
+            Toggle(event.displayName, isOn: Binding(
                 get: { appState.notificationPreference(for: event).isEnabled },
                 set: { appState.setNotificationEnabled($0, for: event) }
             ))
