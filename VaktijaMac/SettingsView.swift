@@ -16,13 +16,7 @@ struct SettingsView: View {
 
             labeledValue("Location", appState.location.name)
             labeledValue("Source", appState.sourceLabel)
-            labeledValue("Cache", appState.cacheStatus)
-
-            Button {
-                Task { await appState.refreshFromCacheAndNetwork() }
-            } label: {
-                Label("Refresh Cache", systemImage: "arrow.clockwise")
-            }
+            cacheStatusRow
 
             Divider()
 
@@ -55,6 +49,26 @@ struct SettingsView: View {
                 Label("Send Test Notification", systemImage: "bell.badge")
             }
         }
+        .frame(width: 320, alignment: .leading)
+    }
+
+    private var cacheStatusRow: some View {
+        HStack {
+            Text("Cache")
+                .foregroundStyle(.secondary)
+            Spacer(minLength: 12)
+            Text(appState.cacheStatus)
+                .multilineTextAlignment(.trailing)
+            Button {
+                Task { await appState.refreshFromCacheAndNetwork() }
+            } label: {
+                Image(systemName: "arrow.clockwise")
+            }
+            .buttonStyle(.borderless)
+            .help("Refresh Cache")
+            .accessibilityLabel("Refresh Cache")
+        }
+        .font(.caption)
     }
 
     private func notificationRow(for event: PrayerEvent) -> some View {
@@ -65,19 +79,30 @@ struct SettingsView: View {
                 set: { appState.setNotificationEnabled($0, for: event) }
             ))
             .toggleStyle(.checkbox)
-            .frame(width: 92, alignment: .leading)
+            .frame(minWidth: 92, alignment: .leading)
+
+            Spacer(minLength: 12)
 
             Stepper(value: Binding(
                 get: { appState.notificationPreference(for: event).reminderOffsetMinutes },
-                set: { appState.setReminderOffsetMinutes($0, for: event) }
+                set: { appState.setReminderOffsetMinutes(Self.roundedReminderOffset($0), for: event) }
             ), in: 1...180, step: 5) {
                 Text("\(preference.reminderOffsetMinutes)m before")
                     .font(.caption)
                     .monospacedDigit()
-                    .frame(width: 84, alignment: .trailing)
+                    .frame(width: 96, alignment: .trailing)
             }
             .disabled(!preference.isEnabled)
         }
+        .frame(maxWidth: .infinity)
+    }
+
+    private static func roundedReminderOffset(_ minutes: Int) -> Int {
+        if minutes <= 3 {
+            return 1
+        }
+
+        return min(180, max(5, ((minutes + 2) / 5) * 5))
     }
 
     private func labeledValue(_ label: String, _ value: String) -> some View {

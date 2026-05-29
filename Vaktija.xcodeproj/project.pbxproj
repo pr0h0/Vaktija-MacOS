@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		01FFA12649EF9A81DBAB68B9 /* PrayerCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7970412E67E4E31A943B264 /* PrayerCache.swift */; };
+		02DD595C9B06C7A8AFD2611B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC8D2490ECED254D3F679F0E /* Assets.xcassets */; };
 		0DC4F40A8FCE2B10E28703A0 /* CountdownEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254323DD7E82E39CB35B8E55 /* CountdownEngine.swift */; };
 		2FD4632B300C1A1588F4659B /* VaktijaMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D80A514977FE0368A7A9CA /* VaktijaMacApp.swift */; };
 		5644A4F4110BC3A7339E8A92 /* PrayerLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679494BBAE79938C452042F8 /* PrayerLocation.swift */; };
@@ -139,6 +140,7 @@
 		B1D1533F886AB241F71F0144 /* AlAdhanClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlAdhanClient.swift; sourceTree = "<group>"; };
 		B7970412E67E4E31A943B264 /* PrayerCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerCache.swift; sourceTree = "<group>"; };
 		BA4579D3FD31503D971E7FB9 /* CountdownFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownFormatterTests.swift; sourceTree = "<group>"; };
+		CC8D2490ECED254D3F679F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD8265516271E22A19E4F1B9 /* PrayerScheduleMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerScheduleMapper.swift; sourceTree = "<group>"; };
 		E062A17D9820A0374EA26115 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F58346FD769E0292EB5D8EE6 /* PrayerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEvent.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				24FB8EF054289D86807CA639 /* AppState.swift */,
+				CC8D2490ECED254D3F679F0E /* Assets.xcassets */,
 				828A288F46C9D65C8AEA24AC /* Info.plist */,
 				4665CE474186D762F13D20C2 /* MenuBarContentView.swift */,
 				FF31EF8D2A1A5764737ED0BB /* NotificationScheduler.swift */,
@@ -304,6 +307,7 @@
 			buildConfigurationList = 9754D96B64090FA030300F0C /* Build configuration list for PBXNativeTarget "VaktijaMac" */;
 			buildPhases = (
 				27189F101029065733DD35ED /* Sources */,
+				D010BFE2BD28A6DE225EEEC8 /* Resources */,
 				02E1A22DE81AA79533026EAA /* Frameworks */,
 				8FF562D5A182C4558C925CD0 /* Embed Foundation Extensions */,
 				8ACF894EBB91BE94DBE5DEB8 /* Embed Frameworks */,
@@ -386,6 +390,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D010BFE2BD28A6DE225EEEC8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02DD595C9B06C7A8AFD2611B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		27189F101029065733DD35ED /* Sources */ = {

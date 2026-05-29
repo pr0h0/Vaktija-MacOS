@@ -59,6 +59,7 @@ targets:
           - group.com.abdulahproho.vaktija
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.abdulahproho.vaktija
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   VaktijaWidgets:
     type: app-extension
     platform: macOS
