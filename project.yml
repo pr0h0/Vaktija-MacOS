@@ -89,6 +89,9 @@ schemes:
         VaktijaMac: all
         VaktijaWidgets: all
         VaktijaCore: all
+    run:
+      config: Debug
+      executable: VaktijaMac
     test:
       targets:
         - VaktijaCoreTests
