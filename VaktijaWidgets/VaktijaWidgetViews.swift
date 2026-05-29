@@ -77,7 +77,7 @@ struct VaktijaWidgetView: View {
 
     private var largeView: some View {
         VStack(alignment: .leading, spacing: 10) {
-            nextPrayerRow(countdownLeadingPadding: 10)
+            nextPrayerRow(countdownLeadingPadding: 10, exactTimeFont: .title3)
             Divider()
             dailyList(events: PrayerEvent.countdownEvents, font: .title3)
             Divider()
@@ -95,10 +95,10 @@ struct VaktijaWidgetView: View {
     }
 
     private var mediumNextRow: some View {
-        nextPrayerRow(countdownLeadingPadding: 10)
+        nextPrayerRow(countdownLeadingPadding: 10, exactTimeFont: .headline)
     }
 
-    private func nextPrayerRow(countdownLeadingPadding: CGFloat) -> some View {
+    private func nextPrayerRow(countdownLeadingPadding: CGFloat, exactTimeFont: Font) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(entry.nextTarget?.event.displayName ?? "Vaktija")
                 .font(.title3.weight(.semibold))
@@ -118,7 +118,7 @@ struct VaktijaWidgetView: View {
                     .padding(.leading, countdownLeadingPadding)
 
                 Text(timeText(for: target.date))
-                    .font(.headline.monospacedDigit())
+                    .font(exactTimeFont.monospacedDigit())
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .trailing)
