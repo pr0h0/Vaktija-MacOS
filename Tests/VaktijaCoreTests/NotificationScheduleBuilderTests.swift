@@ -52,6 +52,47 @@ final class NotificationScheduleBuilderTests: XCTestCase {
         XCTAssertFalse(entries.contains { $0.event == .lastThird })
     }
 
+    func testBuildsEntriesOnlyForEnabledNotificationPreferences() throws {
+        let day = Self.makeDay(asrHour: 16, asrMinute: 45)
+        let now = try Self.date("2026-05-29 12:00:00")
+
+        let entries = NotificationScheduleBuilder.entries(
+            now: now,
+            days: [day],
+            preferences: [
+                PrayerNotificationPreference(event: .fajr, isEnabled: false, reminderOffsetMinutes: 20),
+                PrayerNotificationPreference(event: .asr, isEnabled: true, reminderOffsetMinutes: 45)
+            ],
+            windowDays: 14,
+            calendar: Self.calendar
+        )
+
+        XCTAssertFalse(entries.contains { $0.event == .fajr })
+        let asrEntries = entries.filter { $0.event == .asr }
+        XCTAssertEqual(asrEntries.count, 2)
+        XCTAssertTrue(asrEntries.contains { $0.kind == .reminder && Self.hourMinute($0.fireDate) == "16:00" })
+        XCTAssertTrue(asrEntries.contains { $0.kind == .exact && Self.hourMinute($0.fireDate) == "16:45" })
+    }
+
+    func testUsesDifferentReminderOffsetsPerEnabledEvent() throws {
+        let day = Self.makeDay(asrHour: 16, asrMinute: 45)
+        let now = try Self.date("2026-05-29 12:00:00")
+
+        let entries = NotificationScheduleBuilder.entries(
+            now: now,
+            days: [day],
+            preferences: [
+                PrayerNotificationPreference(event: .dhuhr, isEnabled: true, reminderOffsetMinutes: 10),
+                PrayerNotificationPreference(event: .asr, isEnabled: true, reminderOffsetMinutes: 45)
+            ],
+            windowDays: 14,
+            calendar: Self.calendar
+        )
+
+        XCTAssertTrue(entries.contains { $0.event == .dhuhr && $0.kind == .reminder && Self.hourMinute($0.fireDate) == "12:34" })
+        XCTAssertTrue(entries.contains { $0.event == .asr && $0.kind == .reminder && Self.hourMinute($0.fireDate) == "16:00" })
+    }
+
     private static var calendar: Calendar {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "Europe/Sarajevo")!

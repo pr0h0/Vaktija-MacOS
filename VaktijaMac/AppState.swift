@@ -22,16 +22,10 @@ final class AppState: ObservableObject {
     @Published var menuBarDisplayMode: MenuBarDisplayMode {
         didSet { defaults.set(menuBarDisplayMode.rawValue, forKey: Keys.menuBarDisplayMode) }
     }
-    @Published var notificationsEnabled: Bool {
+    @Published var notificationPreferences: [PrayerNotificationPreference] {
         didSet {
-            defaults.set(notificationsEnabled, forKey: Keys.notificationsEnabled)
+            saveNotificationPreferences()
             Task { await handleNotificationPreferenceChange() }
-        }
-    }
-    @Published var reminderOffsetMinutes: Int {
-        didSet {
-            defaults.set(reminderOffsetMinutes, forKey: Keys.reminderOffsetMinutes)
-            Task { await rescheduleNotificationsIfNeeded() }
         }
     }
     @Published var notificationPermissionStatus = "Not Requested"
@@ -63,6 +57,7 @@ final class AppState: ObservableObject {
         static let menuBarDisplayMode = "menuBarDisplayMode"
         static let notificationsEnabled = "notificationsEnabled"
         static let reminderOffsetMinutes = "reminderOffsetMinutes"
+        static let notificationPreferences = "notificationPreferences"
     }
 
     private let defaults: UserDefaults
@@ -86,9 +81,7 @@ final class AppState: ObservableObject {
 
         let rawMode = defaults.string(forKey: Keys.menuBarDisplayMode)
         self.menuBarDisplayMode = rawMode.flatMap(MenuBarDisplayMode.init(rawValue:)) ?? .fullCountdown
-        self.notificationsEnabled = defaults.bool(forKey: Keys.notificationsEnabled)
-        let storedOffset = defaults.integer(forKey: Keys.reminderOffsetMinutes)
-        self.reminderOffsetMinutes = storedOffset == 0 ? 45 : storedOffset
+        self.notificationPreferences = Self.loadNotificationPreferences(from: defaults)
 
         startTimer()
         Task {
@@ -134,6 +127,27 @@ final class AppState: ObservableObject {
 
     func openNotificationSettings() {
         notificationScheduler.openNotificationSettings()
+    }
+
+    func notificationPreference(for event: PrayerEvent) -> PrayerNotificationPreference {
+        notificationPreferences.first { $0.event == event }
+            ?? PrayerNotificationPreference(event: event, isEnabled: false, reminderOffsetMinutes: 45)
+    }
+
+    func setNotificationEnabled(_ isEnabled: Bool, for event: PrayerEvent) {
+        updateNotificationPreference(for: event) { preference in
+            preference.isEnabled = isEnabled
+        }
+    }
+
+    func setReminderOffsetMinutes(_ minutes: Int, for event: PrayerEvent) {
+        updateNotificationPreference(for: event) { preference in
+            preference.reminderOffsetMinutes = minutes
+        }
+    }
+
+    func sendTestNotification() {
+        Task { await performTestNotification() }
     }
 
     private func startTimer() {
@@ -217,7 +231,7 @@ final class AppState: ObservableObject {
     }
 
     private func handleNotificationPreferenceChange() async {
-        if notificationsEnabled {
+        if notificationPreferences.contains(where: \.isEnabled) {
             do {
                 notificationPermissionStatus = "Requesting"
                 let granted = try await notificationScheduler.requestAuthorization()
@@ -226,13 +240,13 @@ final class AppState: ObservableObject {
                 if granted {
                     await rescheduleNotificationsIfNeeded()
                 } else {
-                    notificationsEnabled = false
+                    disableAllNotificationPreferences()
                     notificationScheduleStatus = "Permission denied"
                     await notificationScheduler.clearScheduledNotifications()
                 }
             } catch {
                 notificationPermissionStatus = "Unavailable"
-                notificationsEnabled = false
+                disableAllNotificationPreferences()
                 notificationScheduleStatus = "Unavailable"
                 await notificationScheduler.clearScheduledNotifications()
             }
@@ -248,7 +262,7 @@ final class AppState: ObservableObject {
     }
 
     private func rescheduleNotificationsIfNeeded() async {
-        guard notificationsEnabled else {
+        guard notificationPreferences.contains(where: \.isEnabled) else {
             return
         }
 
@@ -257,7 +271,7 @@ final class AppState: ObservableObject {
         let entries = NotificationScheduleBuilder.entries(
             now: now,
             days: days,
-            reminderOffset: TimeInterval(reminderOffsetMinutes * 60),
+            preferences: notificationPreferences,
             windowDays: 14,
             calendar: calendar
         )
@@ -265,8 +279,7 @@ final class AppState: ObservableObject {
         do {
             try await notificationScheduler.schedule(
                 entries: entries,
-                calendar: calendar,
-                reminderOffsetMinutes: reminderOffsetMinutes
+                calendar: calendar
             )
             let count = await notificationScheduler.pendingScheduledCount()
             notificationScheduleStatus = "\(count) scheduled"
@@ -309,6 +322,58 @@ final class AppState: ObservableObject {
         }
     }
 
+    private func updateNotificationPreference(
+        for event: PrayerEvent,
+        mutate: (inout PrayerNotificationPreference) -> Void
+    ) {
+        var preferences = notificationPreferences
+        guard let index = preferences.firstIndex(where: { $0.event == event }) else {
+            var preference = PrayerNotificationPreference(event: event, isEnabled: false, reminderOffsetMinutes: 45)
+            mutate(&preference)
+            preferences.append(preference)
+            notificationPreferences = Self.orderedNotificationPreferences(preferences)
+            return
+        }
+
+        mutate(&preferences[index])
+        notificationPreferences = Self.orderedNotificationPreferences(preferences)
+    }
+
+    private func disableAllNotificationPreferences() {
+        notificationPreferences = notificationPreferences.map { preference in
+            var copy = preference
+            copy.isEnabled = false
+            return copy
+        }
+    }
+
+    private func saveNotificationPreferences() {
+        guard let data = try? JSONEncoder().encode(notificationPreferences) else {
+            return
+        }
+
+        defaults.set(data, forKey: Keys.notificationPreferences)
+    }
+
+    private func performTestNotification() async {
+        do {
+            notificationPermissionStatus = "Requesting"
+            let granted = try await notificationScheduler.requestAuthorization()
+            await updateNotificationPermissionStatus()
+
+            guard granted else {
+                notificationScheduleStatus = "Permission denied"
+                return
+            }
+
+            try await notificationScheduler.scheduleTestNotification()
+            notificationScheduleStatus = "Test sent"
+        } catch {
+            notificationPermissionStatus = "Unavailable"
+            notificationScheduleStatus = "Test unavailable"
+        }
+    }
+
     private static func defaultCacheDirectory() -> URL {
         if let appGroupCache = PrayerCache(appGroupIdentifier: "group.com.abdulahproho.vaktija") {
             return appGroupCache.baseDirectory
@@ -317,5 +382,28 @@ final class AppState: ObservableObject {
         return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Vaktija", isDirectory: true)
             .appendingPathComponent("PrayerCache", isDirectory: true)
+    }
+
+    private static func loadNotificationPreferences(from defaults: UserDefaults) -> [PrayerNotificationPreference] {
+        if let data = defaults.data(forKey: Keys.notificationPreferences),
+           let decoded = try? JSONDecoder().decode([PrayerNotificationPreference].self, from: data) {
+            return orderedNotificationPreferences(decoded)
+        }
+
+        let migratedEnabled = defaults.bool(forKey: Keys.notificationsEnabled)
+        let migratedOffset = defaults.integer(forKey: Keys.reminderOffsetMinutes)
+        let offset = migratedOffset == 0 ? 45 : migratedOffset
+        return PrayerEvent.countdownEvents.map {
+            PrayerNotificationPreference(event: $0, isEnabled: migratedEnabled, reminderOffsetMinutes: offset)
+        }
+    }
+
+    private static func orderedNotificationPreferences(
+        _ preferences: [PrayerNotificationPreference]
+    ) -> [PrayerNotificationPreference] {
+        PrayerEvent.countdownEvents.map { event in
+            preferences.first { $0.event == event }
+                ?? PrayerNotificationPreference(event: event, isEnabled: false, reminderOffsetMinutes: 45)
+        }
     }
 }

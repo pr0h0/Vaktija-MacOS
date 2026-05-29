@@ -1,4 +1,5 @@
 import SwiftUI
+import VaktijaCore
 
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
@@ -25,12 +26,14 @@ struct SettingsView: View {
 
             Divider()
 
-            Toggle("Notifications", isOn: $appState.notificationsEnabled)
+            Text("Notifications")
+                .font(.headline)
 
-            Stepper(value: $appState.reminderOffsetMinutes, in: 1...180, step: 5) {
-                Text("Reminder: \(appState.reminderOffsetMinutes)m before")
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(PrayerEvent.countdownEvents, id: \.self) { event in
+                    notificationRow(for: event)
+                }
             }
-            .disabled(!appState.notificationsEnabled)
 
             Text("Permission: \(appState.notificationPermissionStatus)")
                 .font(.caption)
@@ -45,6 +48,35 @@ struct SettingsView: View {
             } label: {
                 Label("Open Notification Settings", systemImage: "gear")
             }
+
+            Button {
+                appState.sendTestNotification()
+            } label: {
+                Label("Send Test Notification", systemImage: "bell.badge")
+            }
+        }
+    }
+
+    private func notificationRow(for event: PrayerEvent) -> some View {
+        let preference = appState.notificationPreference(for: event)
+        return HStack(spacing: 8) {
+            Toggle(event.rawValue, isOn: Binding(
+                get: { appState.notificationPreference(for: event).isEnabled },
+                set: { appState.setNotificationEnabled($0, for: event) }
+            ))
+            .toggleStyle(.checkbox)
+            .frame(width: 92, alignment: .leading)
+
+            Stepper(value: Binding(
+                get: { appState.notificationPreference(for: event).reminderOffsetMinutes },
+                set: { appState.setReminderOffsetMinutes($0, for: event) }
+            ), in: 1...180, step: 5) {
+                Text("\(preference.reminderOffsetMinutes)m before")
+                    .font(.caption)
+                    .monospacedDigit()
+                    .frame(width: 84, alignment: .trailing)
+            }
+            .disabled(!preference.isEnabled)
         }
     }
 

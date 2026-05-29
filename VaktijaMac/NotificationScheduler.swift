@@ -57,8 +57,7 @@ final class NotificationScheduler {
 
     func schedule(
         entries: [NotificationScheduleEntry],
-        calendar: Calendar,
-        reminderOffsetMinutes: Int
+        calendar: Calendar
     ) async throws {
         await clearScheduledNotifications()
 
@@ -68,8 +67,9 @@ final class NotificationScheduler {
 
             switch entry.kind {
             case .reminder:
-                content.title = "\(entry.event.rawValue) in \(reminderOffsetMinutes)m"
-                content.body = "Starts at \(Self.timeText(for: entry.fireDate.addingTimeInterval(TimeInterval(reminderOffsetMinutes * 60)), calendar: calendar))."
+                let offset = entry.reminderOffsetMinutes ?? 0
+                content.title = "\(entry.event.rawValue) in \(offset)m"
+                content.body = "Starts at \(Self.timeText(for: entry.fireDate.addingTimeInterval(TimeInterval(offset * 60)), calendar: calendar))."
             case .exact:
                 content.title = entry.event.rawValue
                 content.body = "It is time for \(entry.event.rawValue)."
@@ -88,6 +88,22 @@ final class NotificationScheduler {
 
             try await center.add(request)
         }
+    }
+
+    func scheduleTestNotification() async throws {
+        let content = UNMutableNotificationContent()
+        content.title = "Vaktija Test"
+        content.body = "Notifications are working."
+        content.sound = .default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "\(identifierPrefix)test.\(Int(Date().timeIntervalSince1970))",
+            content: content,
+            trigger: trigger
+        )
+
+        try await center.add(request)
     }
 
     private func identifier(for entry: NotificationScheduleEntry) -> String {
