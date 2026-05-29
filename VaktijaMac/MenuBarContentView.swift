@@ -34,10 +34,6 @@ struct MenuBarContentView: View {
 
             Divider()
 
-            Text("\(appState.location.name) · \(appState.sourceLabel)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
             SettingsView()
         }
         .padding(20)

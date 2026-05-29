@@ -43,42 +43,43 @@ struct VaktijaWidgetView: View {
     }
 
     private var smallView: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(entry.nextTarget?.event.rawValue ?? "Vaktija")
-                .font(.headline)
+                .font(.title3.weight(.semibold))
                 .lineLimit(1)
 
             if let target = entry.nextTarget {
                 Text(target.date, style: .relative)
-                    .font(.title3.weight(.semibold))
+                    .font(.title2.weight(.semibold))
                     .monospacedDigit()
+                    .minimumScaleFactor(0.78)
                     .lineLimit(1)
                 Text(timeText(for: target.date))
-                    .font(.caption.monospacedDigit())
+                    .font(.callout.monospacedDigit())
                     .foregroundStyle(.secondary)
             }
 
             Spacer(minLength: 0)
             Text(entry.status)
-                .font(.caption2)
+                .font(.caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
         }
     }
 
     private var mediumView: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            header
-            dailyList(events: PrayerEvent.countdownEvents)
+        VStack(alignment: .leading, spacing: 7) {
+            header(titleFont: .headline, detailFont: .callout.monospacedDigit())
+            dailyList(events: PrayerEvent.countdownEvents, font: .callout)
         }
     }
 
     private var largeView: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            header
-            dailyList(events: PrayerEvent.countdownEvents)
+        VStack(alignment: .leading, spacing: 10) {
+            header(titleFont: .title3.weight(.semibold), detailFont: .callout.monospacedDigit())
+            dailyList(events: PrayerEvent.countdownEvents, font: .body)
             Divider()
-            dailyList(events: [.midnight, .lastThird])
+            dailyList(events: [.midnight, .lastThird], font: .callout)
             Spacer(minLength: 0)
             HStack(spacing: 4) {
                 Text(entry.status)
@@ -91,17 +92,19 @@ struct VaktijaWidgetView: View {
         }
     }
 
-    private var header: some View {
+    private func header(titleFont: Font, detailFont: Font) -> some View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.nextTarget?.event.rawValue ?? "Vaktija")
-                    .font(.headline)
+                    .font(titleFont)
                     .lineLimit(1)
 
                 if let target = entry.nextTarget {
                     Text(target.date, style: .relative)
-                        .font(.caption.monospacedDigit())
+                        .font(detailFont)
                         .foregroundStyle(.secondary)
+                        .minimumScaleFactor(0.85)
+                        .lineLimit(1)
                 }
             }
 
@@ -109,14 +112,14 @@ struct VaktijaWidgetView: View {
 
             if let target = entry.nextTarget {
                 Text(timeText(for: target.date))
-                    .font(.caption.monospacedDigit())
+                    .font(detailFont)
                     .foregroundStyle(.secondary)
             }
         }
     }
 
-    private func dailyList(events: [PrayerEvent]) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    private func dailyList(events: [PrayerEvent], font: Font) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
             ForEach(events, id: \.self) { event in
                 if let time = entry.today?.time(for: event) {
                     HStack(spacing: 6) {
@@ -126,7 +129,7 @@ struct VaktijaWidgetView: View {
                         Text(timeText(for: time))
                             .monospacedDigit()
                     }
-                    .font(.caption)
+                    .font(font)
                     .foregroundStyle(event == entry.nextTarget?.event ? .primary : .secondary)
                 }
             }

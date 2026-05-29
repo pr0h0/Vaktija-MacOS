@@ -42,12 +42,6 @@ struct SettingsView: View {
             } label: {
                 Label("Open Notification Settings", systemImage: "gear")
             }
-
-            Button {
-                appState.sendTestNotification()
-            } label: {
-                Label("Send Test Notification", systemImage: "bell.badge")
-            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
