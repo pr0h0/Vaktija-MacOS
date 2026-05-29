@@ -142,7 +142,7 @@ struct VaktijaWidgetView: View {
     }
 
     private var mediumRemainingGrid: some View {
-        let events = PrayerEvent.countdownEvents.filter { $0 != entry.nextTarget?.event }
+        let events = PrayerEvent.countdownEvents
         let columns = [
             GridItem(.flexible(minimum: 112), spacing: 10, alignment: .leading),
             GridItem(.flexible(minimum: 112), spacing: 10, alignment: .leading)
