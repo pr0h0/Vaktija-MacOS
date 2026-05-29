@@ -10,7 +10,10 @@
 		01FFA12649EF9A81DBAB68B9 /* PrayerCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7970412E67E4E31A943B264 /* PrayerCache.swift */; };
 		02DD595C9B06C7A8AFD2611B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC8D2490ECED254D3F679F0E /* Assets.xcassets */; };
 		0DC4F40A8FCE2B10E28703A0 /* CountdownEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254323DD7E82E39CB35B8E55 /* CountdownEngine.swift */; };
+		25574E99C4127A0AD52876ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA19EBCB2283B6AF545865 /* AppDelegate.swift */; };
 		2FD4632B300C1A1588F4659B /* VaktijaMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D80A514977FE0368A7A9CA /* VaktijaMacApp.swift */; };
+		30F1F8F791FF2199C7BD604A /* HotKeyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77B281C9CD5C2AAD17852BE /* HotKeyController.swift */; };
+		4601BF16E6369C78C7FE54D6 /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAAA44CFE43F0514FD7AE65 /* StatusItemController.swift */; };
 		5644A4F4110BC3A7339E8A92 /* PrayerLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679494BBAE79938C452042F8 /* PrayerLocation.swift */; };
 		596E40849E679379405D3E26 /* VaktijaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 944DBD84B7F3C780ED441256 /* VaktijaCore.framework */; };
 		5E304D7A44380B8052CFB0E0 /* CountdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892D976E46051EC7D395F017 /* CountdownFormatter.swift */; };
@@ -121,6 +124,7 @@
 		24FB8EF054289D86807CA639 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		254323DD7E82E39CB35B8E55 /* CountdownEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownEngine.swift; sourceTree = "<group>"; };
 		2828FEB4C5CD0FBFA2E75CF5 /* NotificationScheduleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduleBuilder.swift; sourceTree = "<group>"; };
+		2BAAA44CFE43F0514FD7AE65 /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
 		3A66F3061198BC1923AE5438 /* PrayerDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerDay.swift; sourceTree = "<group>"; };
 		3A9F787E6ABA9D4BF2E58F8F /* VaktijaMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VaktijaMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4665CE474186D762F13D20C2 /* MenuBarContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarContentView.swift; sourceTree = "<group>"; };
@@ -146,8 +150,10 @@
 		CC8D2490ECED254D3F679F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD8265516271E22A19E4F1B9 /* PrayerScheduleMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerScheduleMapper.swift; sourceTree = "<group>"; };
 		DABAB93CF6D65FA922FD85D0 /* CacheHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheHealth.swift; sourceTree = "<group>"; };
+		DFDA19EBCB2283B6AF545865 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E062A17D9820A0374EA26115 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F58346FD769E0292EB5D8EE6 /* PrayerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEvent.swift; sourceTree = "<group>"; };
+		F77B281C9CD5C2AAD17852BE /* HotKeyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyController.swift; sourceTree = "<group>"; };
 		F7D0432357131C72B4C86689 /* NotificationScheduleBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduleBuilderTests.swift; sourceTree = "<group>"; };
 		FF31EF8D2A1A5764737ED0BB /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -243,12 +249,15 @@
 		D4A261AE03DB2ADD02EB5403 /* VaktijaMac */ = {
 			isa = PBXGroup;
 			children = (
+				DFDA19EBCB2283B6AF545865 /* AppDelegate.swift */,
 				24FB8EF054289D86807CA639 /* AppState.swift */,
 				CC8D2490ECED254D3F679F0E /* Assets.xcassets */,
+				F77B281C9CD5C2AAD17852BE /* HotKeyController.swift */,
 				828A288F46C9D65C8AEA24AC /* Info.plist */,
 				4665CE474186D762F13D20C2 /* MenuBarContentView.swift */,
 				FF31EF8D2A1A5764737ED0BB /* NotificationScheduler.swift */,
 				7BDA2C0DAB22521DAFBEC5EF /* SettingsView.swift */,
+				2BAAA44CFE43F0514FD7AE65 /* StatusItemController.swift */,
 				190068A22B662A185D54F2FD /* VaktijaMac.entitlements */,
 				91D80A514977FE0368A7A9CA /* VaktijaMacApp.swift */,
 			);
@@ -413,10 +422,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25574E99C4127A0AD52876ED /* AppDelegate.swift in Sources */,
 				98D611709DF5492C9899129B /* AppState.swift in Sources */,
+				30F1F8F791FF2199C7BD604A /* HotKeyController.swift in Sources */,
 				EBECBE5BF7B748C3EED463AC /* MenuBarContentView.swift in Sources */,
 				718F8678CF949F955C27706D /* NotificationScheduler.swift in Sources */,
 				DF354585D24D77E5098F51B3 /* SettingsView.swift in Sources */,
+				4601BF16E6369C78C7FE54D6 /* StatusItemController.swift in Sources */,
 				2FD4632B300C1A1588F4659B /* VaktijaMacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
