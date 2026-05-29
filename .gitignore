@@ -3,4 +3,5 @@
 DerivedData/
 *.xcuserstate
 xcuserdata/
-dist/
+dist/*
+!dist/VaktijaMac-*.dmg

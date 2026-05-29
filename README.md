@@ -56,23 +56,32 @@ The app includes sunrise in the countdown sequence. Midnight and last third are 
 - XcodeGen, if regenerating `Vaktija.xcodeproj` from `project.yml`
 - Apple signing team configured in Xcode for local builds
 
-## Install From DMG
+## Download And Install
 
-A packaged build is generated in `dist/`:
+The repo includes a prebuilt DMG for convenience:
 
 ```sh
 open dist/VaktijaMac-0.1.0.dmg
 ```
 
-Drag `VaktijaMac.app` onto `Applications`.
+After the DMG opens, drag `VaktijaMac.app` onto `Applications`.
 
-This local package is signed with an Apple Development certificate, not Developer ID notarization. On another Mac, Gatekeeper may require right-click `Open`, or, for a trusted personal build:
+This DMG is built with a free Apple/Xcode account, so it is not Developer ID signed or notarized. macOS Gatekeeper may block the first launch.
+
+Try this first:
+
+1. Open `/Applications`.
+2. Right-click `VaktijaMac.app`.
+3. Click `Open`.
+4. Confirm that you want to open it.
+
+If macOS still blocks it and you trust this build, remove the quarantine attribute:
 
 ```sh
 xattr -dr com.apple.quarantine /Applications/VaktijaMac.app
 ```
 
-For public distribution, the app should be signed with a Developer ID certificate and notarized.
+For a normal public macOS download experience, the app needs a paid Apple Developer Program account, Developer ID signing, and notarization.
 
 ## Build And Test
 
