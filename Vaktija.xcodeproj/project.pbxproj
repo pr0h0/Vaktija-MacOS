@@ -15,6 +15,7 @@
 		5E304D7A44380B8052CFB0E0 /* CountdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892D976E46051EC7D395F017 /* CountdownFormatter.swift */; };
 		5EF83A468E66273FAC70904C /* VaktijaWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0F23E77CFD535A531B9F9B3B /* VaktijaWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		69BEB9D4CB5B62BA2F58FED1 /* VaktijaCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 944DBD84B7F3C780ED441256 /* VaktijaCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		718F8678CF949F955C27706D /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF31EF8D2A1A5764737ED0BB /* NotificationScheduler.swift */; };
 		734EE82EBBD13B2A38B4FE6B /* CountdownFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4579D3FD31503D971E7FB9 /* CountdownFormatterTests.swift */; };
 		737C013619F26EE4399D2EE2 /* VaktijaWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C1B2A8AE15DCCAE497E722 /* VaktijaWidgetProvider.swift */; };
 		76861B28A31E85764E00D7E0 /* PrayerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58346FD769E0292EB5D8EE6 /* PrayerEvent.swift */; };
@@ -142,6 +143,7 @@
 		E062A17D9820A0374EA26115 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F58346FD769E0292EB5D8EE6 /* PrayerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEvent.swift; sourceTree = "<group>"; };
 		F7D0432357131C72B4C86689 /* NotificationScheduleBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduleBuilderTests.swift; sourceTree = "<group>"; };
+		FF31EF8D2A1A5764737ED0BB /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,6 +238,7 @@
 				24FB8EF054289D86807CA639 /* AppState.swift */,
 				828A288F46C9D65C8AEA24AC /* Info.plist */,
 				4665CE474186D762F13D20C2 /* MenuBarContentView.swift */,
+				FF31EF8D2A1A5764737ED0BB /* NotificationScheduler.swift */,
 				7BDA2C0DAB22521DAFBEC5EF /* SettingsView.swift */,
 				190068A22B662A185D54F2FD /* VaktijaMac.entitlements */,
 				91D80A514977FE0368A7A9CA /* VaktijaMacApp.swift */,
@@ -387,6 +390,7 @@
 			files = (
 				98D611709DF5492C9899129B /* AppState.swift in Sources */,
 				EBECBE5BF7B748C3EED463AC /* MenuBarContentView.swift in Sources */,
+				718F8678CF949F955C27706D /* NotificationScheduler.swift in Sources */,
 				DF354585D24D77E5098F51B3 /* SettingsView.swift in Sources */,
 				2FD4632B300C1A1588F4659B /* VaktijaMacApp.swift in Sources */,
 			);

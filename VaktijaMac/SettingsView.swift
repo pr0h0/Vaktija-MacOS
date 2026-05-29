@@ -16,6 +16,7 @@ struct SettingsView: View {
             Stepper(value: $appState.reminderOffsetMinutes, in: 1...180, step: 5) {
                 Text("Reminder: \(appState.reminderOffsetMinutes)m before")
             }
+            .disabled(!appState.notificationsEnabled)
 
             Text("Permission: \(appState.notificationPermissionStatus)")
                 .font(.caption)

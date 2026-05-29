@@ -23,10 +23,16 @@ final class AppState: ObservableObject {
         didSet { defaults.set(menuBarDisplayMode.rawValue, forKey: Keys.menuBarDisplayMode) }
     }
     @Published var notificationsEnabled: Bool {
-        didSet { defaults.set(notificationsEnabled, forKey: Keys.notificationsEnabled) }
+        didSet {
+            defaults.set(notificationsEnabled, forKey: Keys.notificationsEnabled)
+            Task { await handleNotificationPreferenceChange() }
+        }
     }
     @Published var reminderOffsetMinutes: Int {
-        didSet { defaults.set(reminderOffsetMinutes, forKey: Keys.reminderOffsetMinutes) }
+        didSet {
+            defaults.set(reminderOffsetMinutes, forKey: Keys.reminderOffsetMinutes)
+            Task { await rescheduleNotificationsIfNeeded() }
+        }
     }
     @Published var notificationPermissionStatus = "Not Requested"
     @Published private(set) var today: PrayerDay?
@@ -61,6 +67,7 @@ final class AppState: ObservableObject {
     private let defaults: UserDefaults
     private let cache: PrayerCache
     private let client = AlAdhanClient()
+    private let notificationScheduler = NotificationScheduler()
     private var timer: Timer?
 
     private var calendar: Calendar {
@@ -83,13 +90,17 @@ final class AppState: ObservableObject {
         self.reminderOffsetMinutes = storedOffset == 0 ? 45 : storedOffset
 
         startTimer()
-        Task { await refreshFromCacheAndNetwork() }
+        Task {
+            await updateNotificationPermissionStatus()
+            await refreshFromCacheAndNetwork()
+        }
     }
 
     func refreshFromCacheAndNetwork() async {
         do {
             try loadVisibleDaysFromCache()
             cacheStatus = "Cached"
+            await rescheduleNotificationsIfNeeded()
         } catch {
             cacheStatus = "Fetching"
         }
@@ -105,6 +116,7 @@ final class AppState: ObservableObject {
 
             try loadVisibleDaysFromCache()
             cacheStatus = "Updated"
+            await rescheduleNotificationsIfNeeded()
 
             Task.detached { [cache, client, location] in
                 var calendar = Calendar(identifier: .gregorian)
@@ -114,6 +126,7 @@ final class AppState: ObservableObject {
             }
         } catch {
             cacheStatus = today == nil ? "Unavailable" : "Offline Cache"
+            await rescheduleNotificationsIfNeeded()
         }
     }
 
@@ -133,8 +146,13 @@ final class AppState: ObservableObject {
     }
 
     private func tick() {
+        let previousNow = now
         now = Date()
         updateNextTarget()
+
+        if !calendar.isDate(previousNow, inSameDayAs: now) {
+            Task { await refreshFromCacheAndNetwork() }
+        }
     }
 
     private func loadVisibleDaysFromCache() throws {
@@ -166,6 +184,91 @@ final class AppState: ObservableObject {
             days: [today, tomorrow].compactMap { $0 },
             calendar: calendar
         )
+    }
+
+    private func handleNotificationPreferenceChange() async {
+        if notificationsEnabled {
+            do {
+                let granted = try await notificationScheduler.requestAuthorization()
+                await updateNotificationPermissionStatus()
+
+                if granted {
+                    await rescheduleNotificationsIfNeeded()
+                } else {
+                    notificationsEnabled = false
+                    await notificationScheduler.clearScheduledNotifications()
+                }
+            } catch {
+                notificationPermissionStatus = "Unavailable"
+                notificationsEnabled = false
+                await notificationScheduler.clearScheduledNotifications()
+            }
+        } else {
+            await notificationScheduler.clearScheduledNotifications()
+            await updateNotificationPermissionStatus()
+        }
+    }
+
+    private func updateNotificationPermissionStatus() async {
+        notificationPermissionStatus = await notificationScheduler.permissionStatusText()
+    }
+
+    private func rescheduleNotificationsIfNeeded() async {
+        guard notificationsEnabled else {
+            return
+        }
+
+        let days = notificationDays(windowDays: 14)
+        let entries = NotificationScheduleBuilder.entries(
+            now: now,
+            days: days,
+            reminderOffset: TimeInterval(reminderOffsetMinutes * 60),
+            windowDays: 14,
+            calendar: calendar
+        )
+
+        do {
+            try await notificationScheduler.schedule(
+                entries: entries,
+                calendar: calendar,
+                reminderOffsetMinutes: reminderOffsetMinutes
+            )
+        } catch {
+            notificationPermissionStatus = "Unavailable"
+        }
+
+        await updateNotificationPermissionStatus()
+    }
+
+    private func notificationDays(windowDays: Int) -> [PrayerDay] {
+        let start = calendar.startOfDay(for: now)
+        let targetDates = (0...windowDays).compactMap {
+            calendar.date(byAdding: .day, value: $0, to: start)
+        }
+        var requests: [MonthRequest] = []
+        for date in targetDates {
+            let request = MonthRequest(
+                year: calendar.component(.year, from: date),
+                month: calendar.component(.month, from: date)
+            )
+            if !requests.contains(request) {
+                requests.append(request)
+            }
+        }
+
+        var loadedDays: [PrayerDay] = []
+        for request in requests {
+            let monthDays = try? cache.load(
+                locationSlug: location.slug,
+                year: request.year,
+                month: request.month
+            )
+            loadedDays.append(contentsOf: monthDays ?? [])
+        }
+
+        return targetDates.compactMap { date in
+            day(in: loadedDays, matching: date)
+        }
     }
 
     private static func defaultCacheDirectory() -> URL {
