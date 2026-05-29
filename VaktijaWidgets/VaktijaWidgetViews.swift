@@ -68,9 +68,10 @@ struct VaktijaWidgetView: View {
     }
 
     private var mediumView: some View {
-        VStack(alignment: .leading, spacing: 7) {
-            header(titleFont: .headline, detailFont: .callout.monospacedDigit())
-            dailyList(events: PrayerEvent.countdownEvents, font: .callout)
+        VStack(alignment: .leading, spacing: 8) {
+            mediumNextRow
+            Divider()
+            mediumRemainingGrid
         }
     }
 
@@ -114,6 +115,54 @@ struct VaktijaWidgetView: View {
                 Text(timeText(for: target.date))
                     .font(detailFont)
                     .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var mediumNextRow: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(entry.nextTarget?.event.displayName ?? "Vaktija")
+                .font(.title3.weight(.semibold))
+                .lineLimit(1)
+
+            Spacer(minLength: 8)
+
+            if let target = entry.nextTarget {
+                Text(target.date, style: .relative)
+                    .font(.headline.monospacedDigit())
+                    .minimumScaleFactor(0.78)
+                    .lineLimit(1)
+
+                Text(timeText(for: target.date))
+                    .font(.headline.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+    }
+
+    private var mediumRemainingGrid: some View {
+        let events = PrayerEvent.countdownEvents.filter { $0 != entry.nextTarget?.event }
+        let columns = [
+            GridItem(.flexible(minimum: 112), spacing: 10, alignment: .leading),
+            GridItem(.flexible(minimum: 112), spacing: 10, alignment: .leading)
+        ]
+
+        return LazyVGrid(columns: columns, alignment: .leading, spacing: 5) {
+            ForEach(events, id: \.self) { event in
+                if let time = entry.today?.time(for: event) {
+                    HStack(spacing: 6) {
+                        Text(event.displayName)
+                            .lineLimit(1)
+                        Spacer(minLength: 4)
+                        Text(timeText(for: time))
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+                    .font(.callout)
+                    .minimumScaleFactor(0.85)
+                    .lineLimit(1)
+                }
             }
         }
     }
