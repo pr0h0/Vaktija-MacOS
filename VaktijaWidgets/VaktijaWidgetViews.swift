@@ -1,5 +1,6 @@
 import SwiftUI
 import WidgetKit
+import VaktijaCore
 
 struct VaktijaWidget: Widget {
     let kind = "VaktijaWidget"
@@ -19,64 +20,130 @@ struct VaktijaWidgetView: View {
     let entry: VaktijaWidgetEntry
 
     var body: some View {
+        Group {
+            if entry.hasPrayerData {
+                content
+            } else {
+                emptyState
+            }
+        }
+        .containerBackground(.background, for: .widget)
+    }
+
+    @ViewBuilder
+    private var content: some View {
         switch family {
         case .systemSmall:
-            VStack(alignment: .leading, spacing: 6) {
-                Text(entry.nextName)
-                    .font(.headline)
-                Text(entry.relativeCountdown)
-                    .font(.title3.weight(.semibold))
-                Text(entry.nextTime)
-                    .font(.caption.monospacedDigit())
-            }
-            .containerBackground(.background, for: .widget)
+            smallView
         case .systemMedium:
-            dailyList
-                .containerBackground(.background, for: .widget)
+            mediumView
         default:
-            VStack(alignment: .leading, spacing: 10) {
-                dailyList
-                Divider()
-                HStack {
-                    Text("Pola noći")
-                    Spacer()
-                    Text("00:44")
-                }
-                HStack {
-                    Text("Zadnja trećina")
-                    Spacer()
-                    Text("02:12")
-                }
-            }
-            .containerBackground(.background, for: .widget)
+            largeView
         }
     }
 
-    private var dailyList: some View {
+    private var smallView: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text("\(entry.nextName) \(entry.relativeCountdown)")
-                    .font(.headline)
-                Spacer()
-                Text(entry.nextTime)
+            Text(entry.nextTarget?.event.rawValue ?? "Vaktija")
+                .font(.headline)
+                .lineLimit(1)
+
+            if let target = entry.nextTarget {
+                Text(target.date, style: .relative)
+                    .font(.title3.weight(.semibold))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                Text(timeText(for: target.date))
                     .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
             }
-            ForEach([
-                ("Fajr", "03:27"),
-                ("Sunrise", "05:09"),
-                ("Dhuhr", "12:44"),
-                ("Asr", "16:45"),
-                ("Maghrib", "20:19"),
-                ("Isha", "22:01")
-            ], id: \.0) { name, time in
-                HStack {
-                    Text(name)
-                    Spacer()
-                    Text(time)
-                        .monospacedDigit()
+
+            Spacer(minLength: 0)
+            Text(entry.status)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+        }
+    }
+
+    private var mediumView: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            header
+            dailyList(events: PrayerEvent.countdownEvents)
+        }
+    }
+
+    private var largeView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            header
+            dailyList(events: PrayerEvent.countdownEvents)
+            Divider()
+            dailyList(events: [.midnight, .lastThird])
+        }
+    }
+
+    private var header: some View {
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(entry.nextTarget?.event.rawValue ?? "Vaktija")
+                    .font(.headline)
+                    .lineLimit(1)
+
+                if let target = entry.nextTarget {
+                    Text(target.date, style: .relative)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
                 }
-                .font(.caption)
+            }
+
+            Spacer(minLength: 8)
+
+            if let target = entry.nextTarget {
+                Text(timeText(for: target.date))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
             }
         }
+    }
+
+    private func dailyList(events: [PrayerEvent]) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            ForEach(events, id: \.self) { event in
+                if let time = entry.today?.time(for: event) {
+                    HStack(spacing: 6) {
+                        Text(event.rawValue)
+                            .lineLimit(1)
+                        Spacer(minLength: 8)
+                        Text(timeText(for: time))
+                            .monospacedDigit()
+                    }
+                    .font(.caption)
+                    .foregroundStyle(event == entry.nextTarget?.event ? .primary : .secondary)
+                }
+            }
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Vaktija")
+                .font(.headline)
+            Text(entry.status)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Spacer(minLength: 0)
+        }
+    }
+
+    private func timeText(for date: Date) -> String {
+        let components = entry.calendar.dateComponents([.hour, .minute], from: date)
+        return String(format: "%02d:%02d", components.hour ?? 0, components.minute ?? 0)
+    }
+
+    private func timeText(for components: DateComponents) -> String {
+        guard let hour = components.hour, let minute = components.minute else {
+            return "--:--"
+        }
+        return String(format: "%02d:%02d", hour, minute)
     }
 }
