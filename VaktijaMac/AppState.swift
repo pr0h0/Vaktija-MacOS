@@ -84,7 +84,7 @@ final class AppState: ObservableObject {
         self.cache = cache ?? PrayerCache(baseDirectory: Self.defaultCacheDirectory())
 
         let rawMode = defaults.string(forKey: Keys.menuBarDisplayMode)
-        self.menuBarDisplayMode = rawMode.flatMap(MenuBarDisplayMode.init(rawValue:)) ?? .iconOnly
+        self.menuBarDisplayMode = rawMode.flatMap(MenuBarDisplayMode.init(rawValue:)) ?? .fullCountdown
         self.notificationsEnabled = defaults.bool(forKey: Keys.notificationsEnabled)
         let storedOffset = defaults.integer(forKey: Keys.reminderOffsetMinutes)
         self.reminderOffsetMinutes = storedOffset == 0 ? 45 : storedOffset
