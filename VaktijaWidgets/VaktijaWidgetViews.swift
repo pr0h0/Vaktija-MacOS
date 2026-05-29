@@ -43,25 +43,25 @@ struct VaktijaWidgetView: View {
     }
 
     private var smallView: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 9) {
             Text(entry.nextTarget?.event.displayName ?? "Vaktija")
-                .font(.title3.weight(.semibold))
+                .font(.title2.weight(.semibold))
                 .lineLimit(1)
 
             if let target = entry.nextTarget {
                 Text(target.date, style: .relative)
-                    .font(.title2.weight(.semibold))
+                    .font(.title.weight(.semibold))
                     .monospacedDigit()
-                    .minimumScaleFactor(0.78)
+                    .minimumScaleFactor(0.72)
                     .lineLimit(1)
                 Text(timeText(for: target.date))
-                    .font(.callout.monospacedDigit())
+                    .font(.headline.monospacedDigit())
                     .foregroundStyle(.secondary)
             }
 
             Spacer(minLength: 0)
             Text(entry.status)
-                .font(.caption)
+                .font(.callout)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
         }
@@ -77,49 +77,27 @@ struct VaktijaWidgetView: View {
 
     private var largeView: some View {
         VStack(alignment: .leading, spacing: 10) {
-            header(titleFont: .title3.weight(.semibold), detailFont: .callout.monospacedDigit())
-            dailyList(events: PrayerEvent.countdownEvents, font: .body)
+            nextPrayerRow(countdownLeadingPadding: 10)
+            dailyList(events: PrayerEvent.countdownEvents, font: .headline)
             Divider()
-            dailyList(events: [.midnight, .lastThird], font: .callout)
+            dailyList(events: [.midnight, .lastThird], font: .body)
             Spacer(minLength: 0)
             HStack(spacing: 4) {
                 Text(entry.status)
                 Text("•")
                 Text(entry.source)
             }
-            .font(.caption2)
+            .font(.caption)
             .foregroundStyle(.secondary)
             .lineLimit(1)
         }
     }
 
-    private func header(titleFont: Font, detailFont: Font) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(entry.nextTarget?.event.displayName ?? "Vaktija")
-                    .font(titleFont)
-                    .lineLimit(1)
-
-                if let target = entry.nextTarget {
-                    Text(target.date, style: .relative)
-                        .font(detailFont)
-                        .foregroundStyle(.secondary)
-                        .minimumScaleFactor(0.85)
-                        .lineLimit(1)
-                }
-            }
-
-            Spacer(minLength: 8)
-
-            if let target = entry.nextTarget {
-                Text(timeText(for: target.date))
-                    .font(detailFont)
-                    .foregroundStyle(.secondary)
-            }
-        }
+    private var mediumNextRow: some View {
+        nextPrayerRow(countdownLeadingPadding: 10)
     }
 
-    private var mediumNextRow: some View {
+    private func nextPrayerRow(countdownLeadingPadding: CGFloat) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(entry.nextTarget?.event.displayName ?? "Vaktija")
                 .font(.title3.weight(.semibold))
@@ -136,6 +114,7 @@ struct VaktijaWidgetView: View {
                     .minimumScaleFactor(0.82)
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.leading, countdownLeadingPadding)
 
                 Text(timeText(for: target.date))
                     .font(.headline.monospacedDigit())
