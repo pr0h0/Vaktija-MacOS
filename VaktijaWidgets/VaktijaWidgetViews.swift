@@ -55,7 +55,7 @@ struct VaktijaWidgetView: View {
                     .minimumScaleFactor(0.72)
                     .lineLimit(1)
                 Text(timeText(for: target.date))
-                    .font(.headline.monospacedDigit())
+                    .font(.title3.monospacedDigit())
                     .foregroundStyle(.secondary)
             }
 
@@ -78,16 +78,17 @@ struct VaktijaWidgetView: View {
     private var largeView: some View {
         VStack(alignment: .leading, spacing: 10) {
             nextPrayerRow(countdownLeadingPadding: 10)
-            dailyList(events: PrayerEvent.countdownEvents, font: .headline)
             Divider()
-            dailyList(events: [.midnight, .lastThird], font: .body)
+            dailyList(events: PrayerEvent.countdownEvents, font: .title3)
+            Divider()
+            dailyList(events: [.midnight, .lastThird], font: .headline)
             Spacer(minLength: 0)
             HStack(spacing: 4) {
                 Text(entry.status)
                 Text("•")
                 Text(entry.source)
             }
-            .font(.caption)
+            .font(.callout)
             .foregroundStyle(.secondary)
             .lineLimit(1)
         }
