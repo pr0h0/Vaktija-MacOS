@@ -12,9 +12,10 @@ The first version targets macOS only and uses Swift and SwiftUI. It includes:
 - A popover with daily times.
 - Small, medium, and large widgets.
 - Local caching shared by the app and widget extension.
+- Optional local notifications for prayer reminders.
 - Sarajevo as the default and initial location.
 
-The first version does not include Windows, Linux, Electron, Tauri, adhan audio, notifications, or automatic location detection.
+The first version does not include Windows, Linux, Electron, Tauri, adhan audio, or automatic location detection.
 
 ## Data Source
 
@@ -74,6 +75,48 @@ Countdown targets exclude:
 
 After Isha passes, the next target is tomorrow's Fajr. If tomorrow's cache entry is missing, the app should fetch the needed month if possible and otherwise show the latest known data with an unavailable countdown state.
 
+## Notifications
+
+The app supports optional local macOS notifications using `UserNotifications`. Notification settings are controlled from the menu bar popover settings screen.
+
+The first version has one global notification configuration:
+
+- Notifications enabled or disabled.
+- Reminder offset before each countdown target, such as `45 minutes`.
+- Exact-time notifications are automatically enabled when notifications are enabled.
+
+When notifications are enabled, the app schedules two notifications for each countdown target:
+
+- One reminder before the event using the configured offset.
+- One exact-time notification at the event start.
+
+For example, if Asr is at `16:45` and the reminder offset is `45 minutes`, the app schedules:
+
+- `16:00` reminder notification.
+- `16:45` exact-time notification.
+
+Notification targets are the same as countdown targets:
+
+- Fajr
+- Sunrise
+- Dhuhr
+- Asr
+- Maghrib
+- Isha
+
+Pola noći and Zadnja trećina are display-only and do not generate notifications.
+
+The app requests notification permission only when the user enables notifications. If permission is denied, the setting remains off and the UI shows that macOS notification permission is required.
+
+Because macOS limits pending local notifications, the app schedules a rolling window instead of the full cached year. The first version schedules the next 14 days and refreshes the schedule when:
+
+- The app launches.
+- Notification settings change.
+- Cached prayer times change.
+- The date rolls over after midnight.
+
+The scheduler must skip any reminder or exact-time notification whose fire date is already in the past.
+
 ## Menu Bar App
 
 The app uses `MenuBarExtra` for the menu bar item. The menu bar display mode is user-configurable:
@@ -110,6 +153,9 @@ Widgets read from the shared App Group cache. Widget timelines should update aro
 The first settings screen includes:
 
 - Menu bar display mode.
+- Notifications enabled.
+- Reminder offset before each countdown target.
+- Notification permission status.
 - Location display, initially fixed to Sarajevo.
 - Refresh cache action.
 - Source/cache status.
@@ -122,6 +168,8 @@ If the network request fails and cached data exists, the app uses the cached dat
 
 Parsing errors invalidate only the affected month. They should not delete unrelated cached months.
 
+If notification scheduling fails, the app should keep prayer time display working and show notification status as unavailable or permission blocked. Notification errors must not invalidate cached prayer time data.
+
 ## Testing
 
 Core logic should be tested independently from SwiftUI views:
@@ -132,6 +180,8 @@ Core logic should be tested independently from SwiftUI views:
 - Exclude Pola noći and Zadnja trećina from countdown targets.
 - Format full and compact countdown strings.
 - Read and write monthly cache entries.
+- Build notification schedules for the next 14 days.
+- Schedule reminder and exact-time notifications only for valid future fire dates.
 
 Manual verification should cover:
 
@@ -139,3 +189,5 @@ Manual verification should cover:
 - Popover layout.
 - Widget small, medium, and large layouts.
 - Offline behavior using cached data.
+- Notification permission flow.
+- Reminder and exact-time notifications with a short test offset.
