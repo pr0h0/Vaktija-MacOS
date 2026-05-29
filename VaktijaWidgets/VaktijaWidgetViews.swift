@@ -79,6 +79,15 @@ struct VaktijaWidgetView: View {
             dailyList(events: PrayerEvent.countdownEvents)
             Divider()
             dailyList(events: [.midnight, .lastThird])
+            Spacer(minLength: 0)
+            HStack(spacing: 4) {
+                Text(entry.status)
+                Text("•")
+                Text(entry.source)
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
         }
     }
 
@@ -130,6 +139,9 @@ struct VaktijaWidgetView: View {
                 .font(.headline)
             Text(entry.status)
                 .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(entry.source)
+                .font(.caption2)
                 .foregroundStyle(.secondary)
             Spacer(minLength: 0)
         }

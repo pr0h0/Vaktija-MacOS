@@ -106,13 +106,7 @@ final class AppState: ObservableObject {
         }
 
         do {
-            let year = calendar.component(.year, from: now)
-            let month = calendar.component(.month, from: now)
-
-            if !cache.hasMonth(locationSlug: location.slug, year: year, month: month) {
-                let days = try await client.fetchMonth(location: location, year: year, month: month)
-                try cache.save(days: days, locationSlug: location.slug, year: year, month: month)
-            }
+            try await fetchMissingOrInvalidVisibleMonths()
 
             try loadVisibleDaysFromCache()
             cacheStatus = "Updated"
@@ -184,6 +178,37 @@ final class AppState: ObservableObject {
             days: [today, tomorrow].compactMap { $0 },
             calendar: calendar
         )
+    }
+
+    private func fetchMissingOrInvalidVisibleMonths() async throws {
+        let visibleDates = [now, calendar.date(byAdding: .day, value: 1, to: now)].compactMap { $0 }
+        var requests: [MonthRequest] = []
+
+        for date in visibleDates {
+            let request = MonthRequest(
+                year: calendar.component(.year, from: date),
+                month: calendar.component(.month, from: date)
+            )
+            if !requests.contains(request) {
+                requests.append(request)
+            }
+        }
+
+        for request in requests {
+            let needsFetch: Bool
+            if cache.hasMonth(locationSlug: location.slug, year: request.year, month: request.month) {
+                needsFetch = (try? cache.load(locationSlug: location.slug, year: request.year, month: request.month)) == nil
+            } else {
+                needsFetch = true
+            }
+
+            guard needsFetch else {
+                continue
+            }
+
+            let days = try await client.fetchMonth(location: location, year: request.year, month: request.month)
+            try cache.save(days: days, locationSlug: location.slug, year: request.year, month: request.month)
+        }
     }
 
     private func handleNotificationPreferenceChange() async {

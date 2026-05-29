@@ -7,6 +7,7 @@ struct VaktijaWidgetEntry: TimelineEntry {
     let today: PrayerDay?
     let nextTarget: CountdownTarget?
     let status: String
+    let source: String
     let calendar: Calendar
 
     var hasPrayerData: Bool {
@@ -45,6 +46,7 @@ struct VaktijaWidgetProvider: TimelineProvider {
                 today: nil,
                 nextTarget: nil,
                 status: "Cache unavailable",
+                source: "AlAdhan 14.6°",
                 calendar: calendar
             )
         }
@@ -60,6 +62,7 @@ struct VaktijaWidgetProvider: TimelineProvider {
             today: today,
             nextTarget: nextTarget,
             status: today == nil ? "No cached times" : "Sarajevo",
+            source: "AlAdhan 14.6°",
             calendar: calendar
         )
     }
@@ -116,6 +119,7 @@ struct VaktijaWidgetProvider: TimelineProvider {
             today: day,
             nextTarget: nextTarget,
             status: "Sarajevo",
+            source: "AlAdhan 14.6°",
             calendar: calendar
         )
     }

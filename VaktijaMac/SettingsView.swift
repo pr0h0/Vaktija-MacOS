@@ -11,6 +11,20 @@ struct SettingsView: View {
                 }
             }
 
+            Divider()
+
+            labeledValue("Location", appState.location.name)
+            labeledValue("Source", appState.sourceLabel)
+            labeledValue("Cache", appState.cacheStatus)
+
+            Button {
+                Task { await appState.refreshFromCacheAndNetwork() }
+            } label: {
+                Label("Refresh Cache", systemImage: "arrow.clockwise")
+            }
+
+            Divider()
+
             Toggle("Notifications", isOn: $appState.notificationsEnabled)
 
             Stepper(value: $appState.reminderOffsetMinutes, in: 1...180, step: 5) {
@@ -22,5 +36,16 @@ struct SettingsView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
+    }
+
+    private func labeledValue(_ label: String, _ value: String) -> some View {
+        HStack {
+            Text(label)
+                .foregroundStyle(.secondary)
+            Spacer(minLength: 12)
+            Text(value)
+                .multilineTextAlignment(.trailing)
+        }
+        .font(.caption)
     }
 }
