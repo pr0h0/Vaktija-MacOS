@@ -6,19 +6,8 @@ The app is built for personal macOS use and currently targets Sarajevo using AlA
 
 ## Screenshots
 
-Add screenshots to `docs/screenshots/` using these filenames:
-
-- `menu-popover.png`
-- `small-widget.png`
-- `medium-widget.png`
-- `large-widget.png`
-
-After the images are added, they will render here:
-
 ![Menu bar popover](docs/screenshots/menu-popover.png)
-![Small widget](docs/screenshots/small-widget.png)
-![Medium widget](docs/screenshots/medium-widget.png)
-![Large widget](docs/screenshots/large-widget.png)
+![Widgets](docs/screenshots/widgets.png)
 
 ## Features
 
