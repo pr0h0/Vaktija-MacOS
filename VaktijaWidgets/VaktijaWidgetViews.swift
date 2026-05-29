@@ -127,7 +127,11 @@ struct VaktijaWidgetView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if let target = entry.nextTarget {
-                Text(CountdownFormatter.full(duration: target.duration))
+                Text(
+                    timerInterval: entry.date...target.date,
+                    countsDown: true,
+                    showsHours: true
+                )
                     .font(.title3.weight(.semibold).monospacedDigit())
                     .minimumScaleFactor(0.82)
                     .lineLimit(1)
