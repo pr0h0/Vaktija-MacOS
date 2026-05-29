@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "VaktijaCore", targets: ["VaktijaCore"])
     ],
     targets: [
-        .target(name: "VaktijaCore"),
+        .target(name: "VaktijaCore", exclude: ["Info.plist"]),
         .testTarget(name: "VaktijaCoreTests", dependencies: ["VaktijaCore"])
     ]
 )
