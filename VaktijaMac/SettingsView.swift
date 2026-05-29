@@ -35,6 +35,16 @@ struct SettingsView: View {
             Text("Permission: \(appState.notificationPermissionStatus)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+
+            Text("Schedule: \(appState.notificationScheduleStatus)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Button {
+                appState.openNotificationSettings()
+            } label: {
+                Label("Open Notification Settings", systemImage: "gear")
+            }
         }
     }
 

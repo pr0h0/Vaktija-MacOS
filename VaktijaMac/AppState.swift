@@ -35,6 +35,7 @@ final class AppState: ObservableObject {
         }
     }
     @Published var notificationPermissionStatus = "Not Requested"
+    @Published private(set) var notificationScheduleStatus = "Disabled"
     @Published private(set) var today: PrayerDay?
     @Published private(set) var tomorrow: PrayerDay?
     @Published private(set) var nextTarget: CountdownTarget?
@@ -131,6 +132,10 @@ final class AppState: ObservableObject {
         return String(format: "%02d:%02d", hour, minute)
     }
 
+    func openNotificationSettings() {
+        notificationScheduler.openNotificationSettings()
+    }
+
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
@@ -214,6 +219,7 @@ final class AppState: ObservableObject {
     private func handleNotificationPreferenceChange() async {
         if notificationsEnabled {
             do {
+                notificationPermissionStatus = "Requesting"
                 let granted = try await notificationScheduler.requestAuthorization()
                 await updateNotificationPermissionStatus()
 
@@ -221,15 +227,18 @@ final class AppState: ObservableObject {
                     await rescheduleNotificationsIfNeeded()
                 } else {
                     notificationsEnabled = false
+                    notificationScheduleStatus = "Permission denied"
                     await notificationScheduler.clearScheduledNotifications()
                 }
             } catch {
                 notificationPermissionStatus = "Unavailable"
                 notificationsEnabled = false
+                notificationScheduleStatus = "Unavailable"
                 await notificationScheduler.clearScheduledNotifications()
             }
         } else {
             await notificationScheduler.clearScheduledNotifications()
+            notificationScheduleStatus = "Disabled"
             await updateNotificationPermissionStatus()
         }
     }
@@ -243,6 +252,7 @@ final class AppState: ObservableObject {
             return
         }
 
+        notificationScheduleStatus = "Scheduling"
         let days = notificationDays(windowDays: 14)
         let entries = NotificationScheduleBuilder.entries(
             now: now,
@@ -258,8 +268,11 @@ final class AppState: ObservableObject {
                 calendar: calendar,
                 reminderOffsetMinutes: reminderOffsetMinutes
             )
+            let count = await notificationScheduler.pendingScheduledCount()
+            notificationScheduleStatus = "\(count) scheduled"
         } catch {
             notificationPermissionStatus = "Unavailable"
+            notificationScheduleStatus = "Unavailable"
         }
 
         await updateNotificationPermissionStatus()

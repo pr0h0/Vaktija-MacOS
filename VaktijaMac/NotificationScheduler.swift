@@ -1,14 +1,17 @@
 import Foundation
+import AppKit
 import UserNotifications
 import VaktijaCore
 
 @MainActor
 final class NotificationScheduler {
     private let center: UNUserNotificationCenter
+    private let presentationDelegate = NotificationPresentationDelegate()
     private let identifierPrefix = "vaktija.prayer."
 
     init(center: UNUserNotificationCenter = .current()) {
         self.center = center
+        self.center.delegate = presentationDelegate
     }
 
     func permissionStatusText() async -> String {
@@ -18,6 +21,25 @@ final class NotificationScheduler {
 
     func requestAuthorization() async throws -> Bool {
         try await center.requestAuthorization(options: [.alert, .sound])
+    }
+
+    func pendingScheduledCount() async -> Int {
+        let requests = await center.pendingNotificationRequests()
+        return requests.filter { $0.identifier.hasPrefix(identifierPrefix) }.count
+    }
+
+    func openNotificationSettings() {
+        let urls = [
+            "x-apple.systempreferences:com.apple.Notifications-Settings.extension",
+            "x-apple.systempreferences:com.apple.preference.notifications"
+        ]
+
+        for rawURL in urls {
+            guard let url = URL(string: rawURL), NSWorkspace.shared.open(url) else {
+                continue
+            }
+            return
+        }
     }
 
     func clearScheduledNotifications() async {
@@ -110,5 +132,15 @@ private extension PrayerEvent {
         case .midnight: "midnight"
         case .lastThird: "last-third"
         }
+    }
+}
+
+private final class NotificationPresentationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound, .list])
     }
 }

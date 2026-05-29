@@ -349,15 +349,19 @@
 				TargetAttributes = {
 					2267A4565256F3CD8D226D24 = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 					2D7BEA651249E6B9887EF0C1 = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 					46A67D5EDAEEAADD1FFEE386 = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 					61ED73BAC634D5FD8DB6D976 = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -541,7 +545,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -679,7 +684,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
