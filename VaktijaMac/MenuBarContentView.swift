@@ -1,5 +1,6 @@
 import SwiftUI
 import VaktijaCore
+import AppKit
 
 struct MenuBarContentView: View {
     @EnvironmentObject private var appState: AppState
@@ -35,6 +36,17 @@ struct MenuBarContentView: View {
             Divider()
 
             SettingsView()
+
+            Divider()
+
+            Button {
+                NSApp.terminate(nil)
+            } label: {
+                Label("Quit Vaktija", systemImage: "power")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.regular)
         }
         .padding(20)
         .frame(width: 360)
